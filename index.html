@@ -495,7 +495,7 @@
   function renderLogs() {
     const list = document.getElementById('logList');
     if (!logs.length) {
-      list.innerHTML = '<div class="empty-state">Wala pang logs 🌸<br>Tap Time In para magsimula!</div>';
+      list.innerHTML = '<div class="empty-state">No logs 🌸<br>Tap Time In to start!</div>';
       return;
     }
     list.innerHTML = [...logs].reverse().slice(0,30).map(l => `
