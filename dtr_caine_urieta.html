@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="DTR"/>
+  <meta name="theme-color" content="#1a0a2e"/>
+  <title>DTR — Caine Urieta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0e0818;
+      --surface: #1a0f2e;
+      --card: #221538;
+      --purple: #a855f7;
+      --purple-light: #d8b4fe;
+      --purple-dim: #7c3aed;
+      --pink: #ec4899;
+      --pink-light: #f9a8d4;
+      --lavender: #c4b5fd;
+      --text: #f5f0ff;
+      --muted: #9ca3af;
+      --in-color: #86efac;
+      --in-bg: rgba(134,239,172,0.1);
+      --out-color: #fca5a5;
+      --out-bg: rgba(252,165,165,0.1);
+      --border: rgba(168,85,247,0.15);
+      --glow: rgba(168,85,247,0.3);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+    /* background blobs */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -100px; left: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -100px; right: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(236,72,153,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .app {
+      max-width: 430px;
+      margin: 0 auto;
+      padding: env(safe-area-inset-top, 12px) 16px env(safe-area-inset-bottom, 20px);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* HERO CARD */
+    .hero-card {
+      background: linear-gradient(135deg, #2d1060 0%, #1a0a2e 50%, #2d0f45 100%);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 25px;
+    }
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(168,85,247,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .hero-info { flex: 1; }
+    .hero-tag {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 4px;
+    }
+    .hero-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .hero-sub {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+    .hero-photo {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center top;
+      border: 2px solid var(--purple);
+      box-shadow: 0 0 20px rgba(168,85,247,0.4);
+      margin-left: 12px;
+      flex-shrink: 0;
+    }
+    .hero-bottom {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .school-logo {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      opacity: 0.85;
+    }
+    .school-name {
+      font-size: 10px;
+      color: var(--lavender);
+      line-height: 1.4;
+    }
+
+    /* CLOCK */
+    .clock-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+    .clock-time {
+      font-family: 'Playfair Display', serif;
+      font-size: 56px;
+      letter-spacing: -2px;
+      color: var(--text);
+      line-height: 1;
+    }
+    .clock-time .colon { color: var(--purple); animation: blink 1s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .clock-ampm {
+      font-size: 14px;
+      color: var(--purple-light);
+      letter-spacing: 0.1em;
+      margin-top: 2px;
+    }
+    .clock-date {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 10px;
+      transition: all 0.3s;
+    }
+    .status-pill.idle { background: rgba(255,255,255,0.04); color: var(--muted); }
+    .status-pill.in { background: var(--in-bg); color: var(--in-color); border: 1px solid rgba(134,239,172,0.25); }
+    .status-pill.out { background: var(--out-bg); color: var(--out-color); border: 1px solid rgba(252,165,165,0.25); }
+    .dot { width:7px; height:7px; border-radius:50%; background:currentColor; }
+    .dot.pulse { animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.75)} }
+
+    /* BUTTONS */
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .btn {
+      border: none;
+      border-radius: 18px;
+      padding: 20px 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.04em;
+    }
+    .btn:active { transform: scale(0.95); }
+    .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .btn:disabled:active { transform: none; }
+    .btn-icon { font-size: 24px; }
+    .btn-in {
+      background: linear-gradient(135deg, #1a2e1f, #1e3a2a);
+      color: var(--in-color);
+      border: 1px solid rgba(134,239,172,0.2);
+    }
+    .btn-in:not(:disabled):hover { box-shadow: 0 4px 20px rgba(134,239,172,0.15); }
+    .btn-out {
+      background: linear-gradient(135deg, #2e1a2a, #3a1e35);
+      color: var(--pink-light);
+      border: 1px solid rgba(249,168,212,0.2);
+    }
+    .btn-out:not(:disabled):hover { box-shadow: 0 4px 20px rgba(249,168,212,0.15); }
+
+    /* SUMMARY */
+    .summary-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+    }
+    .card-label {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: var(--purple);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .summary-item {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid rgba(168,85,247,0.08);
+    }
+    .summary-item-label { font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+    .summary-item-val { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--text); }
+    .summary-item-val.green { color: var(--in-color); }
+    .summary-item-val.pink { color: var(--pink-light); }
+    .summary-item-val.purple { color: var(--lavender); }
+
+    /* LOGS */
+    .log-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .clear-btn {
+      font-size: 9px;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+    .clear-btn:hover { color: var(--pink-light); }
+    .log-list { display: flex; flex-direction: column; gap: 8px; }
+    .log-entry {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid rgba(168,85,247,0.06);
+      animation: slideIn 0.25s ease;
+    }
+    @keyframes slideIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .log-badge {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 6px;
+      min-width: 38px;
+      text-align: center;
+    }
+    .log-badge.in { background: var(--in-bg); color: var(--in-color); }
+    .log-badge.out { background: rgba(249,168,212,0.1); color: var(--pink-light); }
+    .log-time { font-size: 15px; color: var(--text); }
+    .log-date { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .empty-state { text-align: center; padding: 24px 0; color: var(--muted); font-size: 12px; letter-spacing: 0.06em; line-height: 1.7; }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: calc(env(safe-area-inset-bottom,20px) + 16px);
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: linear-gradient(135deg, var(--purple-dim), var(--pink));
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      z-index: 999;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HERO -->
+  <div class="hero-card">
+    <div class="hero-top">
+      <div class="hero-info">
+        <div class="hero-tag">OJT Daily Time Record</div>
+        <div class="hero-name">Caine Urieta</div>
+        <div class="hero-sub">BS Finance · AR Lustre<br>Puerto Princesa, Palawan</div>
+      </div>
+      <img class="hero-photo" id="heroPhoto" src="" alt="Caine"/>
+    </div>
+    <div class="hero-bottom">
+      <img class="school-logo" id="schoolLogo" src="" alt="WPU"/>
+      <div class="school-name">Western Philippines University</div>
+    </div>
+  </div>
+
+  <!-- CLOCK -->
+  <div class="clock-card">
+    <div class="clock-time" id="clock">12<span class="colon">:</span>00</div>
+    <div class="clock-ampm" id="clockAmpm">PM</div>
+    <div class="clock-date" id="clockDate">—</div>
+    <div class="status-pill idle" id="statusPill">
+      <div class="dot" id="statusDot"></div>
+      <span id="statusText">Not logged in</span>
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="btn-row">
+    <button class="btn btn-in" id="btnIn" onclick="logTime('IN')">
+      <span class="btn-icon">🌸</span>
+      Time In
+    </button>
+    <button class="btn btn-out" id="btnOut" onclick="logTime('OUT')" disabled>
+      <span class="btn-icon">🌙</span>
+      Time Out
+    </button>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-card">
+    <div class="card-label">Today's Summary</div>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="summary-item-label">Time In</div>
+        <div class="summary-item-val green" id="summaryIn">—</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-item-label">Time Out</div>
+        <div class="summary-item-val pink" id="summaryOut">—</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-item-label">Hours Today</div>
+        <div class="summary-item-val purple" id="summaryHours">—</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-item-label">Days Present</div>
+        <div class="summary-item-val" id="summaryDays">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGS -->
+  <div class="log-card">
+    <div class="log-header">
+      <div class="card-label" style="margin:0">Log History</div>
+      <button class="clear-btn" onclick="clearLogs()">Clear all</button>
+    </div>
+    <div class="log-list" id="logList">
+      <div class="empty-state">Wala pang logs 🌸<br>Tap Time In para magsimula!</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+  // Embed images
+  document.getElementById('heroPhoto').src = 'IMG_0449.JPG';
+  document.getElementById('schoolLogo').src = 'wpu_nobg.png';
+
+  const KEY = 'dtr_caine_v2';
+  let logs = [];
+  try { logs = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { logs = []; }
+
+  function save() { localStorage.setItem(KEY, JSON.stringify(logs)); }
+  function pad(n) { return String(n).padStart(2,'0'); }
+
+  function formatTime12(ts) {
+    const d = new Date(ts);
+    let h = d.getHours(), m = d.getMinutes();
+    const ap = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    return `${pad(h)}:${pad(m)} ${ap}`;
+  }
+  function formatDateStr(ts) {
+    const d = new Date(ts);
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()} ${d.getFullYear()}`;
+  }
+  function todayKey() {
+    const d = new Date();
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  }
+  function getTodayLogs() { return logs.filter(l => l.dk === todayKey()); }
+
+  function updateClock() {
+    const now = new Date();
+    let h = now.getHours(), m = now.getMinutes();
+    const ap = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    document.getElementById('clock').innerHTML = `${pad(h)}<span class="colon">:</span>${pad(m)}`;
+    document.getElementById('clockAmpm').textContent = ap;
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    document.getElementById('clockDate').textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+  }
+
+  function updateStatus() {
+    const tl = getTodayLogs();
+    const last = tl.length ? tl[tl.length-1] : null;
+    const pill = document.getElementById('statusPill');
+    const dot = document.getElementById('statusDot');
+    const txt = document.getElementById('statusText');
+    const btnIn = document.getElementById('btnIn');
+    const btnOut = document.getElementById('btnOut');
+    if (!last || last.t === 'OUT') {
+      pill.className = 'status-pill idle';
+      dot.className = 'dot';
+      txt.textContent = 'Not logged in';
+      btnIn.disabled = false; btnOut.disabled = true;
+    } else {
+      pill.className = 'status-pill in';
+      dot.className = 'dot pulse';
+      txt.textContent = `In since ${formatTime12(last.ts)}`;
+      btnIn.disabled = true; btnOut.disabled = false;
+    }
+  }
+
+  function updateSummary() {
+    const tl = getTodayLogs();
+    const inLog = tl.find(l => l.t === 'IN');
+    const outLog = [...tl].reverse().find(l => l.t === 'OUT');
+    document.getElementById('summaryIn').textContent = inLog ? formatTime12(inLog.ts) : '—';
+    document.getElementById('summaryOut').textContent = outLog ? formatTime12(outLog.ts) : '—';
+    if (inLog && outLog) {
+      const h = (outLog.ts - inLog.ts) / 3600000;
+      document.getElementById('summaryHours').textContent = h.toFixed(1) + 'h';
+    } else if (inLog) {
+      const h = (Date.now() - inLog.ts) / 3600000;
+      document.getElementById('summaryHours').textContent = h.toFixed(1) + 'h ↑';
+    } else {
+      document.getElementById('summaryHours').textContent = '—';
+    }
+    const days = [...new Set(logs.filter(l => l.t === 'IN').map(l => l.dk))];
+    document.getElementById('summaryDays').textContent = days.length;
+  }
+
+  function renderLogs() {
+    const list = document.getElementById('logList');
+    if (!logs.length) {
+      list.innerHTML = '<div class="empty-state">Wala pang logs 🌸<br>Tap Time In para magsimula!</div>';
+      return;
+    }
+    list.innerHTML = [...logs].reverse().slice(0,30).map(l => `
+      <div class="log-entry">
+        <div class="log-badge ${l.t === 'IN' ? 'in' : 'out'}">${l.t}</div>
+        <div>
+          <div class="log-time">${formatTime12(l.ts)}</div>
+          <div class="log-date">${formatDateStr(l.ts)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function logTime(type) {
+    logs.push({ t: type, ts: Date.now(), dk: todayKey() });
+    save(); updateStatus(); updateSummary(); renderLogs();
+    if (type === 'IN') toast('🌸 Time In recorded!');
+    else toast('🌙 Time Out recorded!');
+    if (navigator.vibrate) navigator.vibrate(type === 'IN' ? 40 : [40,30,40]);
+  }
+
+  function clearLogs() {
+    if (!confirm('I-clear lahat ng logs? Hindi na ito maibabalik.')) return;
+    logs = []; save(); updateStatus(); updateSummary(); renderLogs();
+    toast('Logs cleared.');
+  }
+
+  setInterval(updateClock, 1000);
+  updateClock(); updateStatus(); updateSummary(); renderLogs();
+</script>
+</body>
+</html>
