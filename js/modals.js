@@ -179,7 +179,7 @@ function openTs() {
       `).join('')
     : `<tr>
          <td colspan="4" style="text-align:center;color:var(--muted);padding:20px;font-size:11px">
-           Wala pang logs 🌸
+           No logs pa po baby🌸
          </td>
        </tr>`;
 

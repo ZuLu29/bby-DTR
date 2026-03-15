@@ -7,7 +7,7 @@ function renderLogs() {
   const el = document.getElementById('logList');
 
   if (!logs.length) {
-    el.innerHTML = '<div class="empty-state">No logs 🌸<br>Tap Time In to start!</div>';
+    el.innerHTML = '<div class="empty-state">No logs pa po baby🌸<br>Tap Time In to start!</div>';
     return;
   }
 
