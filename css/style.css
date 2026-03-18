@@ -180,9 +180,36 @@ body::after {
 .log-badge.in     { background:var(--in-bg); color:var(--in-color); }
 .log-badge.out    { background:rgba(249,168,212,0.1); color:var(--pink-light); }
 .log-badge.manual { outline:1px solid rgba(168,85,247,0.4); }
+.log-content  { flex:1; }
 .log-time  { font-size:15px; color:var(--text); }
 .log-meta  { font-size:10px; color:var(--muted); margin-top:2px; }
 .log-manual-tag { font-size:9px; opacity:0.45; }
+
+.delete-preview {
+  margin: 14px 0 4px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--card);
+  border: 1px solid rgba(168,85,247,0.25);
+}
+
+.log-delete-btn {
+  background:none;
+  border:none;
+  color:var(--muted);
+  cursor:pointer;
+  font-size:16px;
+  padding:4px;
+  border-radius:6px;
+  line-height:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.log-delete-btn:hover {
+  color:var(--pink-light);
+  background:rgba(236,72,153,0.1);
+}
 
 .empty-state { text-align:center; padding:24px 0; color:var(--muted); font-size:12px; letter-spacing:0.06em; line-height:1.7; }
 

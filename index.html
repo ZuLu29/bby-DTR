@@ -186,6 +186,25 @@
   </div>
 </div>
 
+<!-- DELETE CONFIRMATION MODAL -->
+<div class="overlay" id="deleteOverlay" onclick="overlayTap(event,'deleteOverlay')">
+  <div class="sheet">
+    <div class="handle"></div>
+    <div class="modal-title">Delete log entry?</div>
+    <div class="modal-sub">This will permanently remove this log from your history.</div>
+
+    <div class="delete-preview">
+      <div class="log-time" id="deleteTime">09:17 AM</div>
+      <div class="log-meta" id="deleteDate">Wed, Mar 18 2026</div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="mbtn mbtn-cancel" onclick="cancelDeleteLog()">Cancel</button>
+      <button class="mbtn mbtn-save" onclick="confirmDeleteLog()">Delete</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="js/config.js"></script>

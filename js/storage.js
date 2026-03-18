@@ -99,6 +99,14 @@ function addLog(entry) {
   saveLogs();
 }
 
+function deleteLog(ts) {
+  const numericTs = Number(ts);
+  const idx = logs.findIndex(l => Number(l.ts) === numericTs);
+  if (idx === -1) return;
+  logs.splice(idx, 1);
+  saveLogs();
+}
+
 function clearAllLogs() {
   logs = [];
   saveLogs();
