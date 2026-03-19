@@ -34,11 +34,13 @@ function updateSummary() {
   document.getElementById('summaryOut').textContent = outLog ? fmt12(outLog.ts) : '—';
 
   if (inLog && outLog) {
-    document.getElementById('summaryHours').textContent =
-      ((outLog.ts - inLog.ts) / 3600000).toFixed(1) + 'h';
+    const ms = computeWorkMs(inLog.ts, outLog.ts);
+    const h  = Math.floor(ms / 3600000);
+    document.getElementById('summaryHours').textContent = h + 'h';
   } else if (inLog) {
-    document.getElementById('summaryHours').textContent =
-      ((Date.now() - inLog.ts) / 3600000).toFixed(1) + 'h ↑';
+    const ms = computeWorkMs(inLog.ts, Date.now());
+    const h  = Math.floor(ms / 3600000);
+    document.getElementById('summaryHours').textContent = h + 'h ↑';
   } else {
     document.getElementById('summaryHours').textContent = '—';
   }

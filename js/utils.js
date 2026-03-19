@@ -37,6 +37,78 @@ function todayKey() {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
+/**
+ * Compute effective work milliseconds between two timestamps on same day,
+ * applying company rules:
+ * - Work starts at 8:00 AM minimum
+ * - If time-in is between 7:40–7:59 → count from 8:00
+ * - If time-in is 8:05 or later → count from 9:00
+ * - Minutes are not counted (hours only, truncate)
+ * - Lunch 12:00–1:00 PM is not counted
+ */
+function computeWorkMs(startTs, endTs) {
+  if (!startTs || !endTs || endTs <= startTs) return 0;
+
+  const start = new Date(startTs);
+  const end   = new Date(endTs);
+
+  // assume same calendar day (per current app design)
+  const y = start.getFullYear();
+  const m = start.getMonth();
+  const d = start.getDate();
+
+  function toTs(h, min) {
+    return new Date(y, m, d, h, min, 0, 0).getTime();
+  }
+
+  // adjust start according to rules
+  let sH = start.getHours();
+  let sM = start.getMinutes();
+  let s;
+
+  const sevenForty = toTs(7, 40);
+  const eight      = toTs(8, 0);
+  const eightFive  = toTs(8, 5);
+
+  const startMs = start.getTime();
+
+  if (startMs >= sevenForty && startMs < eight) {
+    // 7:40–7:59 → 8:00
+    s = eight;
+  } else if (startMs >= eightFive && startMs < toTs(9, 0)) {
+    // 8:05–8:59 → 9:00
+    s = toTs(9, 0);
+  } else {
+    // generic: truncate minutes (hours only)
+    s = toTs(sH, 0);
+  }
+
+  // never before official start 8:00
+  if (s < eight) s = eight;
+
+  // adjust end: truncate minutes (hours only)
+  let eH = end.getHours();
+  const e = toTs(eH, 0);
+
+  if (e <= s) return 0;
+
+  let worked = e - s;
+
+  // subtract lunch overlap 12:00–13:00
+  const lunchStart = toTs(12, 0);
+  const lunchEnd   = toTs(13, 0);
+
+  const overlapStart = Math.max(s, lunchStart);
+  const overlapEnd   = Math.min(e, lunchEnd);
+
+  if (overlapEnd > overlapStart) {
+    worked -= (overlapEnd - overlapStart);
+  }
+
+  if (worked <= 0) return 0;
+  return worked;
+}
+
 function getTodayLogs() {
   return logs.filter(l => l.dk === todayKey());
 }
@@ -54,7 +126,9 @@ function getDailyRows() {
     const outs = arr.filter(x => x.t === 'OUT').sort((a, b) => a.ts - b.ts);
     const inLog  = ins[0]  || null;
     const outLog = outs[0] || null;
-    const hours  = (inLog && outLog) ? (outLog.ts - inLog.ts) / 3600000 : null;
+    const hours  = (inLog && outLog)
+      ? Math.floor(computeWorkMs(inLog.ts, outLog.ts) / 3600000)
+      : null;
     return { dk, inLog, outLog, hours };
   });
 }
@@ -72,7 +146,8 @@ function computeTotal() {
     const outs = arr.filter(x => x.t === 'OUT').sort((a, b) => a.ts - b.ts);
     const n = Math.min(ins.length, outs.length);
     for (let i = 0; i < n; i++) {
-      total += (outs[i].ts - ins[i].ts) / 3600000;
+      const ms = computeWorkMs(ins[i].ts, outs[i].ts);
+      total += Math.floor(ms / 3600000);
     }
   });
   return total;
