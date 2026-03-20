@@ -68,14 +68,14 @@ function computeWorkMs(startTs, endTs) {
 
   const sevenForty = toTs(7, 40);
   const eight      = toTs(8, 0);
-  const eightFive  = toTs(8, 5);
+  const eightSix   = toTs(8, 6);
 
   const startMs = start.getTime();
 
   if (startMs >= sevenForty && startMs < eight) {
     // 7:40–7:59 → 8:00
     s = eight;
-  } else if (startMs >= eightFive && startMs < toTs(9, 0)) {
+  } else if (startMs >= eightSix && startMs < toTs(9, 0)) {
     // 8:05–8:59 → 9:00
     s = toTs(9, 0);
   } else {
