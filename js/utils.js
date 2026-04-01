@@ -42,7 +42,7 @@ function todayKey() {
  * applying company rules:
  * - Work starts at 8:00 AM minimum
  * - If time-in is between 7:40–7:59 → count from 8:00
- * - If time-in is 8:05 or later → count from 9:00
+ * - If time-in is 8:10 or later (before 9:00) → count from 9:00 (late)
  * - Minutes are not counted (hours only, truncate)
  * - Lunch 12:00–1:00 PM is not counted
  */
@@ -68,15 +68,15 @@ function computeWorkMs(startTs, endTs) {
 
   const sevenForty = toTs(7, 40);
   const eight      = toTs(8, 0);
-  const eightSix   = toTs(8, 6);
+  const eightTen   = toTs(8, 10);
 
   const startMs = start.getTime();
 
   if (startMs >= sevenForty && startMs < eight) {
     // 7:40–7:59 → 8:00
     s = eight;
-  } else if (startMs >= eightSix && startMs < toTs(9, 0)) {
-    // 8:05–8:59 → 9:00
+  } else if (startMs >= eightTen && startMs < toTs(9, 0)) {
+    // 8:10–8:59 → 9:00 (late)
     s = toTs(9, 0);
   } else {
     // generic: truncate minutes (hours only)
